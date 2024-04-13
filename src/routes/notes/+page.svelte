@@ -3,9 +3,9 @@
     import notepad from '$lib/images/notepad.png';
     import UserButton from 'clerk-sveltekit/client/UserButton.svelte'
 
-    let notes = []
-    notes = [...notes, {top: 603, left: 565, width: 836, height: 501, text: "wassup lil bruv"}]
-    notes = [...notes, {top: 100, left: 100, width: 400, height: 400, text: "I do be a little bit of a cool kid huh"}]
+    export let data;
+    let notes = data.data
+
 
     let noteFacts = []
     for (let i = 0; i < notes.length; i++) {
@@ -27,9 +27,8 @@
 <body>
 
 
-{#each notes as {top, left, width, height, text}, i}
+{#each notes as {top, left, width, height, content, name}, i}
     <button bind:this={noteFacts[i].pos} use:draggable={{ cancel: '.content' }} class="notepad" style="top: {top}px; left: {left}px" on:mousedown={() => {
-        console.log("wassup")
         for (let j = 0; j < noteFacts.length; j++) {
             if (j == i) {
                 noteFacts[j].pos.style.zIndex = 2
@@ -41,10 +40,10 @@
     }}>
         <div class="header">
             <img src={notepad} alt="notepad" class="notepadPic"/>
-            <div class="title">*wassup - Notepad.exe</div>
+            <div class="title">*{name} - Notepad.exe</div>
         </div>
         <div bind:clientHeight={noteFacts[i].height} bind:clientWidth={noteFacts[i].width} class="content" bind:this={noteFacts[i].content}
-        contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {text}</div>
+        contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content}</div>
     </button>
 {/each}
 
