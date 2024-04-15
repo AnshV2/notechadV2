@@ -87,8 +87,11 @@
         <div  class="content" 
         on:mouseup={e => {noteFacts[i].width = e.target.getBoundingClientRect().width}}
         on:mouseup={e => {noteFacts[i].height = e.target.getBoundingClientRect().height}}
-        on:input={e => {noteFacts[i].content = e.target.innerText}}
-        contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content}</div>
+        on:input={e => {noteFacts[i].content = e.target.innerHTML}}
+        contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content
+            .replace(/<br\s*\/?>/gi, '') // Replace <br> or <br/> tags with \n
+            .replace(/<div\s*\/?>/gi, '\n') // Replace <div> tags with \n
+            .replace(/<\/div\s*\/?>/gi, '')}</div>
     </button>
 {/each}
 
@@ -125,6 +128,7 @@
         padding-bottom: 8px;
     }
     .content{
+        white-space: pre-wrap;
         border:solid;
         border-color: #f0f0f0;
         background-color: white;
