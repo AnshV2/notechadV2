@@ -12,11 +12,22 @@
         };
     });
 
-    function handleKeyDown(event) {
+    async function handleKeyDown(event) {
         // Check if Ctrl key and S key are pressed
         if (event.ctrlKey && event.key === 's') {
         event.preventDefault(); // Prevent default browser save action
 
+        for (let i = 0; i < noteFacts.length; i++) {
+            const response = await fetch('/api/update', {
+                method: 'POST',
+                body: JSON.stringify({ name: notes[i].name, height: noteFacts[i].height, width: noteFacts[i].width, top: noteFacts[i].top, left: noteFacts[i].left, content: noteFacts[i].content }),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            });
+
+            let total = await response.json()
+        }
         // Call your custom command function here
         console.log("wassup")
         }
@@ -25,20 +36,12 @@
     export let data;
     let notes = data.data
 
-    $: noteFacts = notes.map(note => ({top: 0, left: 0, width: 0, height: 0, content: 0, layer: 1}));
+    $: noteFacts = notes.map(note => ({top: note.top, left: note.left, width: note.width, height: note.height, content: note.content, layer: 1}));
     
-    let produceNotes = () => {
-        for (let i = 0; i < noteFacts.length; i++) {
-            console.log(noteFacts[i].pos.getBoundingClientRect().left)
-            console.log(noteFacts[i].pos.getBoundingClientRect().top)
-            console.log(noteFacts[i].width)
-            console.log(noteFacts[i].height)
-            console.log(noteFacts[i].content.innerText)
-        }
-    }
-    //console.log(t.getBoundingClientRect().left)
+    
 
     let inName = "Name";
+
 </script>
 
 <body>
@@ -64,8 +67,8 @@
 
 {#each notes as {top, left, width, height, content, name}, i}
     <button use:draggable={{ cancel: '.content' }} class="notepad" style="top: {top}px; left: {left}px;  z-index: {noteFacts[i].layer}" 
-    on:mousedown={e => {noteFacts[i].left = e.target.getBoundingClientRect().left}}
-    on:mousedown={e => {noteFacts[i].top = e.target.getBoundingClientRect().top}}
+    on:mouseup={e => {noteFacts[i].left = e.target.getBoundingClientRect().left}}
+    on:mouseup={e => {noteFacts[i].top = e.target.getBoundingClientRect().top}}
     on:mousedown={() => {
         for (let j = 0; j < noteFacts.length; j++) {
             if (j == i) {
@@ -82,8 +85,8 @@
         </div>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div  class="content" 
-        on:mousedown={e => {noteFacts[i].width = e.target.getBoundingClientRect().width}}
-        on:mousedown={e => {noteFacts[i].height = e.target.getBoundingClientRect().height}}
+        on:mouseup={e => {noteFacts[i].width = e.target.getBoundingClientRect().width}}
+        on:mouseup={e => {noteFacts[i].height = e.target.getBoundingClientRect().height}}
         on:input={e => {noteFacts[i].content = e.target.innerText}}
         contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content}</div>
     </button>
