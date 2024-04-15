@@ -14,11 +14,10 @@ export async function POST({ request, locals }) {
 	const { name, width, height, top, left, content } = await request.json();
     let user = locals.session.userId
 
-    console.log("wassup[")
     client.execute({
         sql: "INSERT INTO notes (userid, name, width, height, top, left, content) VALUES (?, ?, ?, ?, ?, ?, ?);",
 		args: [user, name, width, height, top, left, content]
 	});
 	
-
+    return new Response(String(1));
 }

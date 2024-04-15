@@ -2,15 +2,30 @@
     import { draggable } from '@neodrag/svelte';
     import notepad from '$lib/images/notepad.png';
     import UserButton from 'clerk-sveltekit/client/UserButton.svelte'
+    import { onMount } from 'svelte';
+
+    onMount(() => {
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        };
+    });
+
+    function handleKeyDown(event) {
+        // Check if Ctrl key and S key are pressed
+        if (event.ctrlKey && event.key === 's') {
+        event.preventDefault(); // Prevent default browser save action
+
+        // Call your custom command function here
+        console.log("wassup")
+        }
+    }
 
     export let data;
     let notes = data.data
 
-
-    let noteFacts = []
-    for (let i = 0; i < notes.length; i++) {
-        noteFacts = [...noteFacts, {pos: 0, width: 0, height: 0, content: 0}]
-    }
+    $: noteFacts = notes.map(note => ({top: 0, left: 0, width: 0, height: 0, content: 0, layer: 1}));
     
     let produceNotes = () => {
         for (let i = 0; i < noteFacts.length; i++) {
@@ -22,19 +37,42 @@
         }
     }
     //console.log(t.getBoundingClientRect().left)
+
+    let inName = "Name";
 </script>
 
 <body>
 
+    <button on:click={() => {
+        console.log(noteFacts)
+    }}>click</button>
+
+<input bind:value={inName}>
+<button on:click={async() => {
+    const response = await fetch('/api/addnew', {
+        method: 'POST',
+        body: JSON.stringify({ name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy" }),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+
+    let total = await response.json()
+    notes = [...notes, { name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy"}]
+}}>Create Notepad</button>
+
 
 {#each notes as {top, left, width, height, content, name}, i}
-    <button bind:this={noteFacts[i].pos} use:draggable={{ cancel: '.content' }} class="notepad" style="top: {top}px; left: {left}px" on:mousedown={() => {
+    <button use:draggable={{ cancel: '.content' }} class="notepad" style="top: {top}px; left: {left}px;  z-index: {noteFacts[i].layer}" 
+    on:mousedown={e => {noteFacts[i].left = e.target.getBoundingClientRect().left}}
+    on:mousedown={e => {noteFacts[i].top = e.target.getBoundingClientRect().top}}
+    on:mousedown={() => {
         for (let j = 0; j < noteFacts.length; j++) {
             if (j == i) {
-                noteFacts[j].pos.style.zIndex = 2
+                noteFacts[j].layer = 2
             }
             else {
-                noteFacts[j].pos.style.zIndex = 1
+                noteFacts[j].layer = 1
             }
         }
     }}>
@@ -42,10 +80,15 @@
             <img src={notepad} alt="notepad" class="notepadPic"/>
             <div class="title">*{name} - Notepad.exe</div>
         </div>
-        <div bind:clientHeight={noteFacts[i].height} bind:clientWidth={noteFacts[i].width} class="content" bind:this={noteFacts[i].content}
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div  class="content" 
+        on:mousedown={e => {noteFacts[i].width = e.target.getBoundingClientRect().width}}
+        on:mousedown={e => {noteFacts[i].height = e.target.getBoundingClientRect().height}}
+        on:input={e => {noteFacts[i].content = e.target.innerText}}
         contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content}</div>
     </button>
 {/each}
+
 
 </body>
 
