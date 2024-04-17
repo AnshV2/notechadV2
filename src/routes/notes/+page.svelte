@@ -116,7 +116,7 @@
         z-index: 1;
         position:absolute;
         width:fit-content;
-        font-size: 12pt;
+        font-size: 10pt;
         font-family: Consolas, monospace;
         color:black;
         background-color: white;
