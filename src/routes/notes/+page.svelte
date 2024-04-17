@@ -67,8 +67,8 @@
 
 {#each notes as {top, left, width, height, content, name}, i}
     <button use:draggable={{ cancel: '.content' }} class="notepad" style="top: {top}px; left: {left}px;  z-index: {noteFacts[i].layer}" 
-    on:mouseup={e => {noteFacts[i].left = e.target.getBoundingClientRect().left}}
-    on:mouseup={e => {noteFacts[i].top = e.target.getBoundingClientRect().top}}
+    on:mouseup={e => {noteFacts[i].left = e.currentTarget.getBoundingClientRect().left}}
+    on:mouseup={e => {noteFacts[i].top = e.currentTarget.getBoundingClientRect().top}}
     on:mousedown={() => {
         for (let j = 0; j < noteFacts.length; j++) {
             if (j == i) {
@@ -85,13 +85,14 @@
         </div>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div  class="content" 
-        on:mouseup={e => {noteFacts[i].width = e.target.getBoundingClientRect().width}}
-        on:mouseup={e => {noteFacts[i].height = e.target.getBoundingClientRect().height}}
-        on:input={e => {noteFacts[i].content = e.target.innerHTML}}
-        contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content
-            .replace(/<br\s*\/?>/gi, '') // Replace <br> or <br/> tags with \n
-            .replace(/<div\s*\/?>/gi, '\n') // Replace <div> tags with \n
-            .replace(/<\/div\s*\/?>/gi, '')}</div>
+            on:mouseup={e => {noteFacts[i].width = e.currentTarget.getBoundingClientRect().width - 13}}
+            on:mouseup={e => {noteFacts[i].height = e.currentTarget.getBoundingClientRect().height - 13}}
+            on:input={e => {noteFacts[i].content = e.target.innerHTML}}
+            contenteditable="true" spellcheck="false"  style="height: {height}px; width: {width}px"> {content
+                .replace(/<br\s*\/?>/gi, '') // Replace <br> or <br/> tags with \n
+                .replace(/<div\s*\/?>/gi, '\n') // Replace <div> tags with \n
+                .replace(/<\/div\s*\/?>/gi, '')}
+        </div>
     </button>
 {/each}
 
@@ -115,7 +116,7 @@
         z-index: 1;
         position:absolute;
         width:fit-content;
-        font-size: 15pt;
+        font-size: 12pt;
         font-family: Consolas, monospace;
         color:black;
         background-color: white;
