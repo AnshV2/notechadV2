@@ -49,8 +49,8 @@
 <body>
 <Toaster />
 
-<input bind:value={inName}>
-<button on:click={async() => {
+<input class="addName" bind:value={inName}>
+<button class="add" on:click={async() => {
     let check = true;
     if (notes.length >= 10) {
         toast.error("Sorry bud you already got 10 notepads. Afraid I can't afford to let you have more.", {duration: 3000})
@@ -152,6 +152,38 @@
     }
     .content:focus{
         outline: none;
+    }
+
+
+    .addName{
+        all: unset;
+        margin-left: 0.5vh;
+        margin-top: 0.5vh;;
+        background-color: white;
+        color: black;
+        border: 2px solid darksalmon;
+        padding: 5px 10px;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 5px;
+    }
+
+    .add{
+        margin-left: 0.5vh;
+        margin-top: 0.5vh;;
+        background-color: white;
+        color: black;
+        border: 2px solid darksalmon;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 5px;
+    }
+
+    .add:hover{
+        background-color:darksalmon;
+        color: white;
     }
 
 
