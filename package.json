@@ -24,6 +24,7 @@
 	"dependencies": {
 		"@libsql/client": "^0.6.0",
 		"@neodrag/svelte": "^2.0.3",
-		"clerk-sveltekit": "^0.4.1"
+		"clerk-sveltekit": "^0.4.1",
+		"svelte-french-toast": "^1.2.0"
 	}
 }

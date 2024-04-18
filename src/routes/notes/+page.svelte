@@ -3,6 +3,7 @@
     import notepad from '$lib/images/notepad.png';
     import UserButton from 'clerk-sveltekit/client/UserButton.svelte'
     import { onMount } from 'svelte';
+    import toast, { Toaster } from 'svelte-french-toast';
 
     onMount(() => {
         window.addEventListener('keydown', handleKeyDown);
@@ -28,6 +29,7 @@
 
             let total = await response.json()
         }
+        toast.success("Succesfully Saved!", {duration: 2000})
         // Call your custom command function here
         console.log("wassup")
         }
@@ -45,23 +47,33 @@
 </script>
 
 <body>
-
-    <button on:click={() => {
-        console.log(noteFacts)
-    }}>click</button>
+<Toaster />
 
 <input bind:value={inName}>
 <button on:click={async() => {
-    const response = await fetch('/api/addnew', {
-        method: 'POST',
-        body: JSON.stringify({ name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy" }),
-        headers: {
-            'content-type': 'application/json'
+    let check = true;
+    if (notes.length >= 10) {
+        toast.error("Sorry bud you already got 10 notepads. Afraid I can't afford to let you have more.", {duration: 3000})
+        check = false;
+    }
+    for (let i = 0; i < notes.length; i++) {
+        if (notes[i].name == inName) {
+            check = false;
+            toast.error("That Notepad name aint unique bud. Already Exists.", {duration: 2500})
         }
-    });
+    }
+    if (check == true) {
+        const response = await fetch('/api/addnew', {
+            method: 'POST',
+            body: JSON.stringify({ name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy" }),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
 
-    let total = await response.json()
-    notes = [...notes, { name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy"}]
+        let total = await response.json()
+        notes = [...notes, { name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy"}]
+    }
 }}>Create Notepad</button>
 
 
@@ -116,7 +128,7 @@
         z-index: 1;
         position:absolute;
         width:fit-content;
-        font-size: 10pt;
+        font-size: 11pt;
         font-family: Consolas, monospace;
         color:black;
         background-color: white;
