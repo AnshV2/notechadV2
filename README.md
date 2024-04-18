@@ -1,4 +1,4 @@
-# popNotesV2
+# NoteChadV2
 
 My current system for taking notes and jotting things down is I'll make a notepad and then type in it. Then at night I shut down my computer and notepad is gone. Not great. Also just having multiple notepad's open is a huge mess and there are a lot of problems.
 
