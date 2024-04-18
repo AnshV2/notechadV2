@@ -73,6 +73,7 @@
 
         let total = await response.json()
         notes = [...notes, { name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy"}]
+        toast.success("Succesfully created Notepad", {duration: 2000})
     }
 }}>Create Notepad</button>
 
@@ -94,6 +95,19 @@
         <div class="header">
             <img src={notepad} alt="notepad" class="notepadPic"/>
             <div class="title">*{name} - Notepad.exe</div>
+            <button class="x" on:click={async () => {
+                const response = await fetch('/api/delete', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ name: name}),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                });
+
+                let total = await response.json()
+                notes = notes.filter(note => note.name !== name)
+                toast.success("Succesfully deleted Notepad", {duration: 2000})
+            }}>x</button>
         </div>
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div  class="content" 
@@ -113,6 +127,25 @@
 
 
 <style>
+
+    .x{
+        all:unset;
+        padding-bottom: 4px;
+        font-weight:lighter;
+        font-weight: 20;
+        font-size: 16pt;
+        position:absolute;
+        text-align: center;
+        width:45px;
+        height:25px;
+        right: 0%;
+        color:grey;
+        transition: 0.1s;
+    }
+    .x:hover{
+        background-color:red;
+        color:white;
+    }
 
     .notepadPic{
         width:28px;
