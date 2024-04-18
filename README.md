@@ -6,5 +6,3 @@ I am hoping to solve this issue through this web app whoooo. Basically make note
 
 Making this largely for personal use because I need something organized to take small notes in whenever the occassion arrises. I'll add in user auth and database stuff so that anyone can use this not just me. Enyoy using it if you'd like~
 
-
-I am Still implementing rn so completely unfinished. Feel free to look through the repo though. 
