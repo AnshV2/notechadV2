@@ -148,6 +148,7 @@
                     notes[i].left = noteFacts[i].left;
                     notes[i].height = noteFacts[i].height;
                     notes[i].width = noteFacts[i].width;
+                    notes[i].content = noteFacts[i].content;
                 }
 
                 notes = notes.filter(note => note.name !== name)
