@@ -13,11 +13,7 @@
         };
     });
 
-    async function handleKeyDown(event) {
-        // Check if Ctrl key and S key are pressed
-        if (event.ctrlKey && event.key === 's') {
-        event.preventDefault(); // Prevent default browser save action
-
+    async function save() {
         for (let i = 0; i < noteFacts.length; i++) {
             const response = await fetch('/api/update', {
                 method: 'POST',
@@ -29,7 +25,25 @@
 
             let total = await response.json()
         }
-        toast.success("Succesfully Saved!", {duration: 2000})
+    }
+
+    async function handleKeyDown(event) {
+        // Check if Ctrl key and S key are pressed
+        if (event.ctrlKey && event.key === 's') {
+        event.preventDefault(); // Prevent default browser save action
+
+       
+        toast.promise(
+            save(),
+            {
+                loading: 'Saving...',
+                success: 'Succesfully saved!',
+                error: 'Could not save.',
+            }
+        );
+
+
+
         // Call your custom command function here
         console.log("wassup")
         }
@@ -44,10 +58,27 @@
 
     let inName = "Name";
 
+
+    let up = () => {
+        for (let i = 0; i < notes.length; i++) {
+            notes[i] = {name: notes[i].name, height: noteFacts[i].height, width: noteFacts[i].width, top: noteFacts[i].top, left: noteFacts[i].left, content: noteFacts[i].content}
+        }
+    }
+
 </script>
 
 <body>
 <Toaster />
+
+<button on:click={() => {
+    console.log(notes);
+    console.log(noteFacts);
+}}>click</button>
+<button on:click={() => {
+    up();
+}}>up</button>
+
+
 
 <input class="addName" bind:value={inName}>
 <button class="add" on:click={async() => {
@@ -63,6 +94,7 @@
         }
     }
     if (check == true) {
+
         const response = await fetch('/api/addnew', {
             method: 'POST',
             body: JSON.stringify({ name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy" }),
@@ -72,6 +104,21 @@
         });
 
         let total = await response.json()
+
+        for (let i = 0; i < noteFacts.length; i++) {
+            notes[i].top = noteFacts[i].top;
+            notes[i].left = noteFacts[i].left;
+            notes[i].height = noteFacts[i].height;
+            notes[i].width = noteFacts[i].width;
+        }
+
+        let fillerNotes = notes;
+        let fillerNoteFacts = noteFacts;
+
+        notes = [];
+        notes = fillerNotes
+        noteFacts = fillerNoteFacts
+
         notes = [...notes, { name: inName, height: 400, width: 400, top: 300, left: 300, content: "enyoy"}]
         toast.success("Succesfully created Notepad", {duration: 2000})
     }
@@ -79,9 +126,9 @@
 
 
 {#each notes as {top, left, width, height, content, name}, i}
-    <button use:draggable={{ cancel: '.content' }} class="notepad" style="top: {top}px; left: {left}px;  z-index: {noteFacts[i].layer}" 
-    on:mouseup={e => {noteFacts[i].left = e.currentTarget.getBoundingClientRect().left}}
-    on:mouseup={e => {noteFacts[i].top = e.currentTarget.getBoundingClientRect().top}}
+    <button use:draggable={{ cancel: '.content', position: {x: notes[i].left, y: notes[i].top} }} class="notepad" style=" z-index: {noteFacts[i].layer}" 
+    on:neodrag={e => {noteFacts[i].left = e.detail.offsetX}}
+    on:neodrag={e => {noteFacts[i].top = e.detail.offsetY}}
     on:mousedown={() => {
         for (let j = 0; j < noteFacts.length; j++) {
             if (j == i) {
@@ -105,6 +152,14 @@
                 });
 
                 let total = await response.json()
+
+                for (let i = 0; i < noteFacts.length; i++) {
+                    notes[i].top = noteFacts[i].top;
+                    notes[i].left = noteFacts[i].left;
+                    notes[i].height = noteFacts[i].height;
+                    notes[i].width = noteFacts[i].width;
+                }
+
                 notes = notes.filter(note => note.name !== name)
                 toast.success("Succesfully deleted Notepad", {duration: 2000})
             }}>x</button>
