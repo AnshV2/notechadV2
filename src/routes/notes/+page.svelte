@@ -70,16 +70,6 @@
 <body>
 <Toaster />
 
-<button on:click={() => {
-    console.log(notes);
-    console.log(noteFacts);
-}}>click</button>
-<button on:click={() => {
-    up();
-}}>up</button>
-
-
-
 <input class="addName" bind:value={inName}>
 <button class="add" on:click={async() => {
     let check = true;
