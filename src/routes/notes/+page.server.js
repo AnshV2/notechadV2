@@ -10,10 +10,10 @@ const client = createClient({
 
 
 export async function load({ locals }) {
-    let user = locals.session.userId
+	let user = locals.session.userId
 	const data = await client.execute({
-		sql: "SELECT * FROM notes ;",
-		args: []
+		sql: "SELECT * FROM notes where userid = ?;",
+		args: [user]
 	});
 	return {
 		data: data.rows
